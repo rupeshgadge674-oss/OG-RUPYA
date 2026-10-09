@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Coding Practice Portal</title>
+<style>
+:root{--bg:#f4f7fb;--panel:#fff;--ink:#172033;--muted:#65718a;--brand:#4f46e5;--brand2:#7c3aed;--line:#e4e9f2;--green:#15803d;--red:#b91c1c}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(120deg,#312e81,#4f46e5,#7c3aed);color:#fff;padding:22px clamp(16px,4vw,48px);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{font-size:22px;font-weight:800;letter-spacing:.2px}.brand span{color:#c4b5fd}
+header p{margin:6px 0 0;color:#e0e7ff;font-size:13px}
+.pill{border:1px solid #ffffff70;border-radius:999px;padding:8px 12px;font-size:12px;background:#ffffff18}
+main{max-width:1250px;margin:24px auto;padding:0 16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.stat,.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;box-shadow:0 5px 18px #1f2a4410}
+.stat{padding:16px 18px}.stat small{color:var(--muted)}.stat strong{display:block;font-size:24px;margin-top:7px}
+.layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:18px;align-items:start}
+.card h2{font-size:17px;margin:0}.card-head{padding:18px 18px 14px;border-bottom:1px solid var(--line)}
+.search{width:100%;margin-top:14px;padding:11px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;outline-color:var(--brand)}
+.problem-list{padding:8px;max-height:590px;overflow:auto}
+.problem{width:100%;display:block;text-align:left;border:1px solid transparent;background:transparent;border-radius:10px;padding:13px;margin:3px 0;cursor:pointer;color:var(--ink)}
+.problem:hover{background:#f5f3ff}.problem.active{background:#eef2ff;border-color:#c7d2fe}
+.problem strong{display:block;font-size:14px;margin-bottom:7px}.meta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:12px}
+.tag{display:inline-block;padding:4px 7px;border-radius:6px;background:#f1f5f9;color:#475569;font-size:11px}
+.tag.easy{background:#dcfce7;color:#166534}.tag.medium{background:#fef3c7;color:#92400e}
+.workspace{overflow:hidden}.details{padding:20px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--brand);font-weight:800}
+.details h1{font-size:24px;margin:8px 0}.details p{color:#4b5870;line-height:1.6;margin:8px 0 14px}
+.section-title{font-weight:700;font-size:13px;margin:16px 0 8px}
+.example{background:#f8fafc;border:1px solid var(--line);border-radius:9px;padding:12px;font:13px/1.6 Consolas,monospace;white-space:pre-wrap}
+.editor-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:13px 16px;background:#f8fafc;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+select,button{font:inherit;border-radius:8px;padding:9px 12px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+button{cursor:pointer;font-weight:700}button.primary{background:var(--brand);color:#fff;border-color:var(--brand)}button.primary:hover{background:#4338ca}button.secondary:hover{background:#eef2ff}
+#code{display:block;width:100%;min-height:260px;resize:vertical;border:0;outline:none;padding:18px;background:#111827;color:#e5e7eb;font:14px/1.65 Consolas,Monaco,monospace;tab-size:2}
+.actions{display:flex;gap:9px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--line)}
+.output-wrap{padding:16px;background:#0b1220;color:#d1d5db;border-top:1px solid #263248}
+.output-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:#f8fafc;font-weight:700;font-size:13px}
+#output{min-height:65px;white-space:pre-wrap;font:13px/1.6 Consolas,monospace;color:#a7f3d0}
+.note{font-size:12px;color:var(--muted);line-height:1.5;margin:12px 0 0}
+footer{text-align:center;padding:25px 16px;color:var(--muted);font-size:12px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.problem-list{max-height:300px}.stats{grid-template-columns:1fr}.details h1{font-size:21px}}
+</style>
+</head>
+<body>
+<header>
+  <div><div class="brand">⌘ Code<span>Practice</span></div><p>Online Coding Practice Portal · Third Year Polytechnic Practical</p></div>
+  <div class="pill">HTML · CSS · JavaScript</div>
+</header>
+<main>
+  <section class="stats">
+    <div class="stat"><small>Practice Problems</small><strong id="totalCount">6</strong></div>
+    <div class="stat"><small>Problems Attempted</small><strong id="attemptedCount">0</strong></div>
+    <div class="stat"><small>Portal Status</small><strong style="color:var(--green)">Ready to code</strong></div>
+  </section>
+  <div class="layout">
+    <aside class="card">
+      <div class="card-head"><h2>Problem Library</h2><input class="search" id="search" type="search" placeholder="Search problems..." aria-label="Search problems"></div>
+      <div class="problem-list" id="problemList"></div>
+    </aside>
+    <section class="card workspace">
+      <div class="details">
+        <div class="eyebrow" id="problemCategory">Basics · Easy</div>
+        <h1 id="problemTitle">Hello, World!</h1>
+        <p id="problemDescription"></p>
+        <div class="section-title">Sample Input</div><div class="example" id="sampleInput"></div>
+        <div class="section-title">Expected Output</div><div class="example" id="sampleOutput"></div>
+        <p class="note" id="hint"></p>
+      </div>
+      <div class="editor-head">
+        <strong>Code Editor</strong>
+        <label for="language" style="font-size:13px;color:var(--muted)">Language:
+          <select id="language" aria-label="Select language"><option value="javascript">JavaScript</option><option value="html">HTML</option><option value="css">CSS</option></select>
+        </label>
+      </div>
+      <textarea id="code" spellcheck="false" aria-label="Code editor">// Write your JavaScript code here
+console.log("Hello, World!");</textarea>
+      <div class="actions">
+        <button class="primary" id="runBtn">▶ Run Code</button>
+        <button class="secondary" id="resetBtn">Reset Code</button>
+        <button class="secondary" id="solutionBtn">Show Hint</button>
+      </div>
+      <div class="output-wrap"><div class="output-top"><span>Console Output</span><span id="runStatus">Waiting for code…</span></div><div id="output">Click “Run Code” to see the output.</div></div>
+    </section>
+  </div>
+</main>
+<footer>Online Coding Practice Portal · Educational demo built using a single HTML file</footer>
+<script>
+const problems=[
+ {id:1,title:"Hello, World!",level:"Easy",category:"Basics",description:"Write a program that prints the message Hello, World! to the console. This is your first step in programming.",input:"No input",output:"Hello, World!",hint:"Use console.log(\"Hello, World!\");",code:'console.log("Hello, World!");'},
+ {id:2,title:"Add Two Numbers",level:"Easy",category:"Operators",description:"Create two variables, add their values, and print the sum. Use the numbers 12 and 8.",input:"12 8",output:"20",hint:"Store the numbers in variables and print a + b.",code:"let a = 12;\\nlet b = 8;\\nconsole.log(a + b);"},
+ {id:3,title:"Even or Odd",level:"Easy",category:"Conditionals",description:"Check whether the number 17 is even or odd. Print only the word Even or Odd.",input:"17",output:"Odd",hint:"Use the remainder operator (%). If n % 2 is 0, the number is even.",code:'let n = 17;\\nconsole.log(n % 2 === 0 ? "Even" : "Odd");'},
+ {id:4,title:"Factorial",level:"Medium",category:"Loops",description:"Calculate the factorial of 5. Factorial means multiplying all positive integers from 1 to n.",input:"5",output:"120",hint:"Start with result = 1 and multiply it by each integer from 1 through n.",code:"let n = 5;\\nlet result = 1;\\nfor (let i = 1; i <= n; i++) {\\n  result *= i;\\n}\\nconsole.log(result);"},
+ {id:5,title:"Reverse a String",level:"Medium",category:"Strings",description:"Reverse the string \"coding\" and print the result.",input:"coding",output:"gnidoc",hint:"Strings can be split into characters, reversed, and joined again.",code:'let word = "coding";\\nconsole.log(word.split("").reverse().join(""));'},
+ {id:6,title:"Find Largest Number",level:"Easy",category:"Arrays",description:"Find and print the largest number in the array [14, 7, 29, 3, 18].",input:"14 7 29 3 18",output:"29",hint:"Use Math.max(...numbers) or loop through the array to find the maximum.",code:"let numbers = [14, 7, 29, 3, 18];\\nconsole.log(Math.max(...numbers));"}
+];
+let current=problems[0];const attempted=new Set();
+const $=id=>document.getElementById(id);
+function renderList(filter=""){
+ const list=$("problemList");list.innerHTML="";
+ problems.filter(p=>(p.title+" "+p.category+" "+p.level).toLowerCase().includes(filter.toLowerCase())).forEach(p=>{
+  const b=document.createElement("button");b.className="problem"+(p.id===current.id?" active":"");b.innerHTML=`<strong>${p.id}. ${p.title}</strong><div class="meta"><span>${p.category}</span><span class="tag ${p.level.toLowerCase()}">${p.level}</span></div>`;
+  b.addEventListener("click",()=>selectProblem(p));list.appendChild(b);
+ });
+ if(!list.children.length)list.innerHTML='<p style="padding:12px;color:#65718a;font-size:13px">No matching problems found.</p>';
+}
+function selectProblem(p){
+ current=p;$("problemCategory").textContent=p.category+" · "+p.level;$("problemTitle").textContent=p.title;$("problemDescription").textContent=p.description;$("sampleInput").textContent=p.input;$("sampleOutput").textContent=p.output;$("hint").textContent="Hint: click “Show Hint” if you need help.";
+ $("language").value="javascript";$("code").value=p.code.replace(/\\n/g,"\n");$("output").textContent="Click “Run Code” to see the output.";$("runStatus").textContent="Waiting for code…";renderList($("search").value);
+}
+$("search").addEventListener("input",e=>renderList(e.target.value));
+$("runBtn").addEventListener("click",()=>{
+ attempted.add(current.id);$("attemptedCount").textContent=attempted.size;
+ const lang=$("language").value,source=$("code").value;
+ if(lang==="javascript"){
+  const logs=[];const safeConsole={log:(...args)=>logs.push(args.map(v=>typeof v==="object"?JSON.stringify(v):String(v)).join(" ")),error:(...args)=>logs.push("Error: "+args.join(" ")),warn:(...args)=>logs.push(args.join(" "))};
+  try{
+   // Run learner JavaScript in a function with a limited console object.
+   new Function("console",'"use strict";\n'+source)(safeConsole);
+   $("output").textContent=logs.length?logs.join("\n"):"Program finished with no console output.";$("runStatus").textContent="Executed";
+  }catch(err){$("output").textContent=err.name+": "+err.message;$("runStatus").textContent="Error";}
+ }else if(lang==="html"){
+  $("output").textContent="HTML preview is available in a browser page. Save your HTML as a separate file to view its full page output."; $("runStatus").textContent="HTML selected";
+ }else{
+  $("output").textContent="CSS styles an HTML page. Select JavaScript to run code in this console."; $("runStatus").textContent="CSS selected";
+ }
+});
+$("resetBtn").addEventListener("click",()=>{ $("code").value=current.code.replace(/\\n/g,"\n");$("output").textContent="Code reset to the starter example.";$("runStatus").textContent="Reset";});
+$("solutionBtn").addEventListener("click",()=>{$("hint").textContent="Hint: "+current.hint;});
+$("language").addEventListener("change",e=>{
+ if(e.target.value==="javascript")$("code").value=current.code.replace(/\\n/g,"\n");
+ else if(e.target.value==="html")$("code").value='<!DOCTYPE html>\n<html>\n<body>\n  <h1>Hello, Coding!</h1>\n</body>\n</html>';
+ else $("code").value='body {\n  font-family: Arial, sans-serif;\n  background: #f4f7fb;\n}';
+});
+$("totalCount").textContent=problems.length;
+selectProblem(problems[0]);
+</script>
+</body>
+</html>
